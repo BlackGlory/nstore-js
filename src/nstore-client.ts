@@ -1,0 +1,278 @@
+import { fetch } from 'extra-fetch'
+import { head, put, get, del } from 'extra-request'
+import { url, pathname, json, text, csv, searchParams, signal, basicAuth, keepalive } from 'extra-request/lib/es2018/transformers'
+import { NotFound } from '@blackglory/http-status'
+import { ok, toJSON, toCSV, toText } from 'extra-response'
+
+export { HTTPClientError } from '@blackglory/http-status'
+
+interface IItem<T> {
+  revision: string
+  payload: T
+}
+
+interface IInfo {
+  namespace: string
+  items: number
+}
+
+export interface INStoreClientOptions {
+  server: string
+  token?: string
+  basicAuth?: {
+    username: string
+    password: string
+  }
+  keepalive?: boolean
+}
+
+export interface INStoreClientRequestOptions {
+  signal?: AbortSignal
+  token?: string
+  keepalive?: boolean
+}
+
+export interface INStoreClientRequestOptionsWithRevision extends INStoreClientRequestOptions {
+  revision?: string
+}
+
+export interface INStoreClientRequestOptionsWithoutToken {
+  signal?: AbortSignal
+  keepalive?: boolean
+}
+
+export class NStoreClient {
+  constructor(private options: INStoreClientOptions) {}
+
+  async set(
+    namespace: string
+  , id: string
+  , payload: string
+  , options: INStoreClientRequestOptionsWithRevision = {}
+  ): Promise<void> {
+    const token = options.token ?? this.options.token
+    const auth = this.options.basicAuth
+    const req = put(
+      url(this.options.server)
+    , pathname(`/nstore/${namespace}/items/${id}`)
+    , token && searchParams({ token })
+    , auth && basicAuth(auth.username, auth.password)
+    , text(payload)
+    , options.signal && signal(options.signal)
+    , keepalive(options.keepalive ?? this.options.keepalive)
+    )
+
+    await fetch(req).then(ok)
+  }
+
+  async setJSON<T>(
+    namespace: string
+  , id: string
+  , payload: T
+  , options: INStoreClientRequestOptionsWithRevision = {}
+  ): Promise<void> {
+    const token = options.token ?? this.options.token
+    const auth = this.options.basicAuth
+    const req = put(
+      url(this.options.server)
+    , pathname(`/nstore/${namespace}/items/${id}`)
+    , token && searchParams({ token })
+    , auth && basicAuth(auth.username, auth.password)
+    , json(payload)
+    , options.signal && signal(options.signal)
+    , keepalive(options.keepalive ?? this.options.keepalive)
+    )
+
+    await fetch(req).then(ok)
+  }
+
+  async setCSV<T extends object>(
+    namespace: string
+  , id: string
+  , payload: T[]
+  , options: INStoreClientRequestOptionsWithRevision = {}
+  ): Promise<void> {
+    const token = options.token ?? this.options.token
+    const auth = this.options.basicAuth
+    const req = put(
+      url(this.options.server)
+    , pathname(`/nstore/${namespace}/items/${id}`)
+    , token && searchParams({ token })
+    , auth && basicAuth(auth.username, auth.password)
+    , csv(payload)
+    , options.signal && signal(options.signal)
+    , keepalive(options.keepalive ?? this.options.keepalive)
+    )
+
+    await fetch(req).then(ok)
+  }
+
+  async has(
+    namespace: string
+  , id: string
+  , options: INStoreClientRequestOptionsWithRevision = {}
+  ): Promise<boolean> {
+    const token = options.token ?? this.options.token
+    const auth = this.options.basicAuth
+    const req = head(
+      url(this.options.server)
+    , pathname(`/nstore/${namespace}/items/${id}`)
+    , token && searchParams({ token })
+    , auth && basicAuth(auth.username, auth.password)
+    , options.signal && signal(options.signal)
+    , keepalive(options.keepalive ?? this.options.keepalive)
+    )
+
+    try {
+      await fetch(req).then(ok)
+      return true
+    } catch (e) {
+      if (e instanceof NotFound) return false
+      throw e
+    }
+  }
+
+  get(
+    namespace: string
+  , id: string
+  , options?: INStoreClientRequestOptionsWithRevision
+  ): Promise<IItem<string>> {
+    return this._get(namespace, id, options).then(async res => ({
+      revision: res.headers.get('ETag')!
+    , payload: await toText(res)
+    }))
+  }
+
+  getJSON<T>(
+    namespace: string
+  , id: string
+  , options?: INStoreClientRequestOptionsWithRevision
+  ): Promise<IItem<T>> {
+    return this._get(namespace, id, options).then(async res => ({
+      revision: res.headers.get('ETag')!
+    , payload: await toJSON(res)
+    }))
+  }
+
+  getCSV<T extends object>(
+    namespace: string
+  , id: string
+  , options?: INStoreClientRequestOptionsWithRevision
+  ): Promise<IItem<T[]>> {
+    return this._get(namespace, id, options).then(async res => ({
+      revision: res.headers.get('ETag')!
+    , payload: await toCSV(res) as T[]
+    }))
+  }
+
+  private async _get(
+    namespace: string
+  , id: string
+  , options: INStoreClientRequestOptionsWithRevision = {}
+  ): Promise<Response> {
+    const token = options.token ?? this.options.token
+    const auth = this.options.basicAuth
+    const req = get(
+      url(this.options.server)
+    , pathname(`/nstore/${namespace}/items/${id}`)
+    , token && searchParams({ token })
+    , auth && basicAuth(auth.username, auth.password)
+    , options.signal && signal(options.signal)
+    , keepalive(options.keepalive ?? this.options.keepalive)
+    )
+
+    return await fetch(req).then(ok)
+  }
+
+  async del(
+    namespace: string
+  , id: string
+  , options: INStoreClientRequestOptionsWithRevision = {}
+  ): Promise<void> {
+    const token = options.token ?? this.options.token
+    const auth = this.options.basicAuth
+    const req = del(
+      url(this.options.server)
+    , pathname(`/nstore/${namespace}/items/${id}`)
+    , token && searchParams({ token })
+    , auth && basicAuth(auth.username, auth.password)
+    , options.signal && signal(options.signal)
+    , keepalive(options.keepalive ?? this.options.keepalive)
+    )
+
+    await fetch(req).then(ok)
+  }
+
+  async clear(
+    namespace: string
+  , options: INStoreClientRequestOptions = {}
+  ): Promise<void> {
+    const token = options.token ?? this.options.token
+    const auth = this.options.basicAuth
+    const req = del(
+      url(this.options.server)
+    , pathname(`/nstore/${namespace}`)
+    , token && searchParams({ token })
+    , auth && basicAuth(auth.username, auth.password)
+    , options.signal && signal(options.signal)
+    , keepalive(options.keepalive ?? this.options.keepalive)
+    )
+
+    await fetch(req).then(ok)
+  }
+
+  async stats(
+    namespace: string
+  , options: INStoreClientRequestOptionsWithoutToken = {}
+  ): Promise<IInfo> {
+    const auth = this.options.basicAuth
+    const req = get(
+      url(this.options.server)
+    , pathname(`/nstore/${namespace}/stats`)
+    , auth && basicAuth(auth.username, auth.password)
+    , options.signal && signal(options.signal)
+    , keepalive(options.keepalive ?? this.options.keepalive)
+    )
+
+    return await fetch(req)
+      .then(ok)
+      .then(toJSON) as IInfo
+  }
+
+  async getAllItemIds(
+    namespace: string
+  , options: INStoreClientRequestOptions = {}
+  ): Promise<string[]> {
+    const token = options.token ?? this.options.token
+    const auth = this.options.basicAuth
+    const req = get(
+      url(this.options.server)
+    , pathname(`/nstore/${namespace}/items`)
+    , token && searchParams({ token })
+    , auth && basicAuth(auth.username, auth.password)
+    , options.signal && signal(options.signal)
+    , keepalive(options.keepalive ?? this.options.keepalive)
+    )
+
+    return await fetch(req)
+      .then(ok)
+      .then(toJSON) as string[]
+  }
+
+  async getAllNamespaces(
+    options: INStoreClientRequestOptionsWithoutToken = {}
+  ): Promise<string[]> {
+    const auth = this.options.basicAuth
+    const req = get(
+      url(this.options.server)
+    , pathname('/nstore')
+    , auth && basicAuth(auth.username, auth.password)
+    , options.signal && signal(options.signal)
+    , keepalive(options.keepalive ?? this.options.keepalive)
+    )
+
+    return await fetch(req)
+      .then(ok)
+      .then(toJSON) as string[]
+  }
+}
