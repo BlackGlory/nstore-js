@@ -9,7 +9,7 @@ beforeEach(() => server.resetHandlers())
 afterAll(() => server.close())
 
 describe('NStoreClient', () => {
-  it('set(namespace: string, id: string, payload: string): Promise<void>', async () => {
+  test('set(namespace: string, id: string, payload: string): Promise<void>', async () => {
     const client = createClient()
     const namespace = 'namespace'
     const id = 'item-id'
@@ -22,7 +22,7 @@ describe('NStoreClient', () => {
     expect(proResult).toBeUndefined()
   })
 
-  it('setJSON(namespace: string, id: string, payload: Json): Promise<void>', async () => {
+  test('setJSON(namespace: string, id: string, payload: Json): Promise<void>', async () => {
     const client = createClient()
     const namespace = 'namespace'
     const id = 'item-id'
@@ -54,7 +54,7 @@ describe('NStoreClient', () => {
     expect(proResult).toBeUndefined()
   })
 
-  it('has(namespace, string, id: string): Promise<boolean>', async () => {
+  test('has(namespace, string, id: string): Promise<boolean>', async () => {
     const client = createClient()
     const namespace = 'namespace'
     const id = 'item-id'
@@ -125,7 +125,7 @@ describe('NStoreClient', () => {
     })
   })
 
-  it('getAllItemIds(namespace: string): Promise<string[]>', async () => {
+  test('getAllItemIds(namespace: string): Promise<string[]>', async () => {
     const client = createClient()
     const namespace = 'namespace'
 
@@ -136,7 +136,7 @@ describe('NStoreClient', () => {
     expect(proResult).toStrictEqual(['id'])
   })
 
-  it('getAllNamespaces(): Promise<string[]>', async () => {
+  test('getAllNamespaces(): Promise<string[]>', async () => {
     const client = createClient()
 
     const result = client.getAllNamespaces()
@@ -146,7 +146,7 @@ describe('NStoreClient', () => {
     expect(proResult).toStrictEqual(['namespace'])
   })
 
-  it('del(namespace: string, id: string): Promise<void>', async () => {
+  test('del(namespace: string, id: string): Promise<void>', async () => {
     const client = createClient()
     const namespace = 'namespace'
     const id = 'item-id'
@@ -158,7 +158,7 @@ describe('NStoreClient', () => {
     expect(proResult).toBeUndefined()
   })
 
-  it('clear(namespace: string): Prmise<void>', async () => {
+  test('clear(namespace: string): Prmise<void>', async () => {
     const client = createClient()
     const namespace = 'namespace'
 
@@ -169,7 +169,7 @@ describe('NStoreClient', () => {
     expect(proResult).toBeUndefined()
   })
 
-  it('stats(namespace: string): Promise<{ namespace: string; items: number }>', async () => {
+  test('stats(namespace: string): Promise<{ namespace: string; items: number }>', async () => {
     const client = createClient()
     const namespace = 'namespace'
 

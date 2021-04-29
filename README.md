@@ -41,6 +41,19 @@ interface INStoreClientRequestOptionsWithoutToken {
 }
 ```
 
+#### Mode
+
+```ts
+enum Mode {
+  Exact
+, Ceiling
+, Floor
+, Nearest
+, Lower
+, Higher
+}
+```
+
 #### set
 
 ```ts
@@ -80,6 +93,7 @@ NStoreClient#setJSON<T extends object>(
 NStoreClient#has(
   namespace: string
 , id: string
+, mode?: Mode
 , options?: INStoreClientRequestOptionsWithRevision
 ): Promise<boolean>
 ```
@@ -90,6 +104,7 @@ NStoreClient#has(
 NStoreClient#get(
   namespace: string
 , id: string
+, mode?: Mode
 , options?: INStoreClientRequestOptionsWithRevision
 ): Promise<{
   revision: string
@@ -103,6 +118,7 @@ NStoreClient#get(
 NStoreClient#getJSON(
   namespace: string
 , id: string
+, mode?: Mode
 , options?: INStoreClientRequestOptionsWithRevision
 ): Promise<{
   revision: string
@@ -116,6 +132,7 @@ NStoreClient#getJSON(
 NStoreClient#getCSV<T extends object>(
   namespace: string
 , id: string
+, mode?: Mode
 , options?: INStoreClientRequestOptionsWithRevision
 ): Promise<{
   revision: string

@@ -8,7 +8,7 @@ beforeEach(() => server.resetHandlers())
 afterAll(() => server.close())
 
 describe('RevisionPolicyClient', () => {
-  it('getNamespaces(): Promise<string[]>', async () => {
+  test('getNamespaces(): Promise<string[]>', async () => {
     const client = createClient()
 
     const result = client.getNamespaces()
@@ -37,7 +37,7 @@ describe('RevisionPolicyClient', () => {
     })
   })
 
-  it('setUpdateRevisionRequired(namespace: string, val: boolean): Promise<void>', async () => {
+  test('setUpdateRevisionRequired(namespace: string, val: boolean): Promise<void>', async () => {
     const client = createClient()
     const namespace = 'namespace'
     const val = true
@@ -49,7 +49,7 @@ describe('RevisionPolicyClient', () => {
     expect(proResult).toBeUndefined()
   })
 
-  it('removeUpdateRevisionRequired(namespace: string): Promise<void>', async () => {
+  test('removeUpdateRevisionRequired(namespace: string): Promise<void>', async () => {
     const client = createClient()
     const namespace = 'namespace'
 
@@ -60,7 +60,7 @@ describe('RevisionPolicyClient', () => {
     expect(proResult).toBeUndefined()
   })
 
-  it('setDeleteRevisionRequired(namespace: string, val: boolean): Promise<void>', async () => {
+  test('setDeleteRevisionRequired(namespace: string, val: boolean): Promise<void>', async () => {
     const client = createClient()
     const namespace = 'namespace'
     const val = true
@@ -72,7 +72,7 @@ describe('RevisionPolicyClient', () => {
     expect(proResult).toBeUndefined()
   })
 
-  it('removeDeleteRevisionRequired(namespace: string): Promise<void>', async () => {
+  test('removeDeleteRevisionRequired(namespace: string): Promise<void>', async () => {
     const client = createClient()
     const namespace = 'namespace'
 

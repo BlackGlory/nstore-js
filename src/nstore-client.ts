@@ -16,6 +16,15 @@ interface IInfo {
   items: number
 }
 
+export enum Mode {
+  Exact = 'exact'
+, Ceiling = 'ceiling'
+, Floor = 'floor'
+, Nearest = 'nearest'
+, Lower = 'lower'
+, Higher = 'higher'
+}
+
 export interface INStoreClientOptions {
   server: string
   token?: string
@@ -110,6 +119,7 @@ export class NStoreClient {
   async has(
     namespace: string
   , id: string
+  , mode: Mode = Mode.Exact
   , options: INStoreClientRequestOptionsWithRevision = {}
   ): Promise<boolean> {
     const token = options.token ?? this.options.token
@@ -117,6 +127,7 @@ export class NStoreClient {
     const req = head(
       url(this.options.server)
     , pathname(`/nstore/${namespace}/items/${id}`)
+    , searchParams({ mode })
     , token && searchParams({ token })
     , auth && basicAuth(auth.username, auth.password)
     , options.signal && signal(options.signal)
@@ -135,9 +146,10 @@ export class NStoreClient {
   get(
     namespace: string
   , id: string
+  , mode?: Mode
   , options?: INStoreClientRequestOptionsWithRevision
   ): Promise<IItem<string>> {
-    return this._get(namespace, id, options).then(async res => ({
+    return this._get(namespace, id, mode, options).then(async res => ({
       revision: res.headers.get('ETag')!
     , payload: await toText(res)
     }))
@@ -146,9 +158,10 @@ export class NStoreClient {
   getJSON<T>(
     namespace: string
   , id: string
+  , mode?: Mode
   , options?: INStoreClientRequestOptionsWithRevision
   ): Promise<IItem<T>> {
-    return this._get(namespace, id, options).then(async res => ({
+    return this._get(namespace, id, mode, options).then(async res => ({
       revision: res.headers.get('ETag')!
     , payload: await toJSON(res)
     }))
@@ -157,9 +170,10 @@ export class NStoreClient {
   getCSV<T extends object>(
     namespace: string
   , id: string
+  , mode?: Mode
   , options?: INStoreClientRequestOptionsWithRevision
   ): Promise<IItem<T[]>> {
-    return this._get(namespace, id, options).then(async res => ({
+    return this._get(namespace, id, mode, options).then(async res => ({
       revision: res.headers.get('ETag')!
     , payload: await toCSV(res) as T[]
     }))
@@ -168,6 +182,7 @@ export class NStoreClient {
   private async _get(
     namespace: string
   , id: string
+  , mode: Mode = Mode.Exact
   , options: INStoreClientRequestOptionsWithRevision = {}
   ): Promise<Response> {
     const token = options.token ?? this.options.token
@@ -175,6 +190,7 @@ export class NStoreClient {
     const req = get(
       url(this.options.server)
     , pathname(`/nstore/${namespace}/items/${id}`)
+    , searchParams({ mode })
     , token && searchParams({ token })
     , auth && basicAuth(auth.username, auth.password)
     , options.signal && signal(options.signal)
