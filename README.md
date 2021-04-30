@@ -59,7 +59,7 @@ enum Mode {
 ```ts
 NStoreClient#set(
   namespace: string
-, id: string
+, id: bigint
 , payload: string
 , options?: INStoreClientRequestOptionsWithRevision
 ): Promise<void>
@@ -70,7 +70,7 @@ NStoreClient#set(
 ```ts
 NStoreClient#setJSON(
   namespace: string
-, id: string
+, id: bigint
 , payload: Json
 , options?: INStoreClientRequestOptionsWithRevision
 ): Promise<void>
@@ -81,7 +81,7 @@ NStoreClient#setJSON(
 ```ts
 NStoreClient#setJSON<T extends object>(
   namespace: string
-, id: string
+, id: bigint
 , payload: T[]
 , options?: INStoreClientRequestOptionsWithRevision
 ): Promise<void>
@@ -92,7 +92,7 @@ NStoreClient#setJSON<T extends object>(
 ```ts
 NStoreClient#has(
   namespace: string
-, id: string
+, id: bigint
 , mode?: Mode
 , options?: INStoreClientRequestOptionsWithRevision
 ): Promise<boolean>
@@ -103,7 +103,7 @@ NStoreClient#has(
 ```ts
 NStoreClient#get(
   namespace: string
-, id: string
+, id: bigint
 , mode?: Mode
 , options?: INStoreClientRequestOptionsWithRevision
 ): Promise<{
@@ -117,7 +117,7 @@ NStoreClient#get(
 ```ts
 NStoreClient#getJSON(
   namespace: string
-, id: string
+, id: bigint
 , mode?: Mode
 , options?: INStoreClientRequestOptionsWithRevision
 ): Promise<{
@@ -131,7 +131,7 @@ NStoreClient#getJSON(
 ```ts
 NStoreClient#getCSV<T extends object>(
   namespace: string
-, id: string
+, id: bigint
 , mode?: Mode
 , options?: INStoreClientRequestOptionsWithRevision
 ): Promise<{
@@ -145,7 +145,7 @@ NStoreClient#getCSV<T extends object>(
 ```ts
 NStoreClient#del(
   namespace: string
-, id: string
+, id: bigint
 , options?: INStoreClientRequestOptionsWithRevision
 ): Promise<void>
 ```
@@ -183,7 +183,7 @@ NStoreClient#stats(
   namespace: string
 , options?: INStoreClientRequestOptionsWithoutToken
 ): Promise<<{
-  id: string
+  namespace: string
   items: number
 }>
 ```

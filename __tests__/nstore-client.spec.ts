@@ -9,10 +9,12 @@ beforeEach(() => server.resetHandlers())
 afterAll(() => server.close())
 
 describe('NStoreClient', () => {
-  test('set(namespace: string, id: string, payload: string): Promise<void>', async () => {
+  test(`
+    set(namespace: string, id: bigint, payload: string): Promise<void>
+  `, async () => {
     const client = createClient()
     const namespace = 'namespace'
-    const id = 'item-id'
+    const id = 1n
     const doc = 'message'
 
     const result = client.set(namespace, id, doc)
@@ -22,10 +24,12 @@ describe('NStoreClient', () => {
     expect(proResult).toBeUndefined()
   })
 
-  test('setJSON(namespace: string, id: string, payload: Json): Promise<void>', async () => {
+  test(`
+    setJSON(namespace: string, id: bigint, payload: Json): Promise<void>
+  `, async () => {
     const client = createClient()
     const namespace = 'namespace'
-    const id = 'item-id'
+    const id = 1n
     const doc = { message: 'message' }
 
     const result = client.setJSON(namespace, id, doc)
@@ -35,16 +39,16 @@ describe('NStoreClient', () => {
     expect(proResult).toBeUndefined()
   })
 
-  it(`
+  test(`
     setCSV<T extends object>(
       namespace: string
-    , id: string
+    , id: bigint
     , payload: T[]
     ): Promise<void>
   `, async () => {
     const client = createClient()
     const namespace = 'namespace'
-    const id = 'item-id'
+    const id = 1n
     const doc = [{ message: 'message' }]
 
     const result = client.setCSV(namespace, id, doc)
@@ -54,10 +58,10 @@ describe('NStoreClient', () => {
     expect(proResult).toBeUndefined()
   })
 
-  test('has(namespace, string, id: string): Promise<boolean>', async () => {
+  test('has(namespace, string, id: bigint): Promise<boolean>', async () => {
     const client = createClient()
     const namespace = 'namespace'
-    const id = 'item-id'
+    const id = 1n
 
     const result = client.has(namespace, id)
     const proResult = await result
@@ -66,16 +70,16 @@ describe('NStoreClient', () => {
     expect(proResult).toBeTrue()
   })
 
-  it(`
+  test(`
     get(
       namespace: string
-    , id: string
+    , id: bigint
     ): Promise<{ revision: string; payload: string }>
   `, async () => {
     const client = createClient()
     const namespace = 'namespace'
 
-    const result = client.get(namespace, 'text')
+    const result = client.get(namespace, 1n)
     const proResult = await result
 
     expect(result).toBePromise()
@@ -85,7 +89,7 @@ describe('NStoreClient', () => {
     })
   })
 
-  it(`
+  test(`
     getJSON(
       namespace: string
     , id: string
@@ -94,7 +98,7 @@ describe('NStoreClient', () => {
     const client = createClient()
     const namespace = 'namespace'
 
-    const result = client.getJSON(namespace, 'json')
+    const result = client.getJSON(namespace, 2n)
     const proResult = await result
 
     expect(result).toBePromise()
@@ -104,7 +108,7 @@ describe('NStoreClient', () => {
     })
   })
 
-  it(`
+  test(`
     getCSV<T extends object>(
       namespace: string
     , id: string
@@ -113,7 +117,7 @@ describe('NStoreClient', () => {
     const client = createClient()
     const namespace = 'namespace'
 
-    const result = client.getCSV(namespace, 'csv')
+    const result = client.getCSV(namespace, 3n)
     const proResult = await result
 
     expect(result).toBePromise()
@@ -125,7 +129,7 @@ describe('NStoreClient', () => {
     })
   })
 
-  test('getAllItemIds(namespace: string): Promise<string[]>', async () => {
+  test('getAllItemIds(namespace: string): Promise<bigint[]>', async () => {
     const client = createClient()
     const namespace = 'namespace'
 
@@ -133,7 +137,7 @@ describe('NStoreClient', () => {
     const proResult = await result
 
     expect(result).toBePromise()
-    expect(proResult).toStrictEqual(['id'])
+    expect(proResult).toStrictEqual([1n])
   })
 
   test('getAllNamespaces(): Promise<string[]>', async () => {
@@ -149,7 +153,7 @@ describe('NStoreClient', () => {
   test('del(namespace: string, id: string): Promise<void>', async () => {
     const client = createClient()
     const namespace = 'namespace'
-    const id = 'item-id'
+    const id = 1n
 
     const result = client.del(namespace, id)
     const proResult = await result
@@ -169,7 +173,9 @@ describe('NStoreClient', () => {
     expect(proResult).toBeUndefined()
   })
 
-  test('stats(namespace: string): Promise<{ namespace: string; items: number }>', async () => {
+  test(`
+    stats(namespace: string): Promise<{ namespace: string; items: number }>
+  `, async () => {
     const client = createClient()
     const namespace = 'namespace'
 

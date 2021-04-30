@@ -55,7 +55,7 @@ export class NStoreClient {
 
   async set(
     namespace: string
-  , id: string
+  , id: bigint
   , payload: string
   , options: INStoreClientRequestOptionsWithRevision = {}
   ): Promise<void> {
@@ -63,7 +63,7 @@ export class NStoreClient {
     const auth = this.options.basicAuth
     const req = put(
       url(this.options.server)
-    , pathname(`/nstore/${namespace}/items/${id}`)
+    , pathname(`/nstore/${namespace}/items/${toHex(id)}`)
     , token && searchParams({ token })
     , auth && basicAuth(auth.username, auth.password)
     , text(payload)
@@ -76,7 +76,7 @@ export class NStoreClient {
 
   async setJSON<T>(
     namespace: string
-  , id: string
+  , id: bigint
   , payload: T
   , options: INStoreClientRequestOptionsWithRevision = {}
   ): Promise<void> {
@@ -84,7 +84,7 @@ export class NStoreClient {
     const auth = this.options.basicAuth
     const req = put(
       url(this.options.server)
-    , pathname(`/nstore/${namespace}/items/${id}`)
+    , pathname(`/nstore/${namespace}/items/${toHex(id)}`)
     , token && searchParams({ token })
     , auth && basicAuth(auth.username, auth.password)
     , json(payload)
@@ -97,7 +97,7 @@ export class NStoreClient {
 
   async setCSV<T extends object>(
     namespace: string
-  , id: string
+  , id: bigint
   , payload: T[]
   , options: INStoreClientRequestOptionsWithRevision = {}
   ): Promise<void> {
@@ -105,7 +105,7 @@ export class NStoreClient {
     const auth = this.options.basicAuth
     const req = put(
       url(this.options.server)
-    , pathname(`/nstore/${namespace}/items/${id}`)
+    , pathname(`/nstore/${namespace}/items/${toHex(id)}`)
     , token && searchParams({ token })
     , auth && basicAuth(auth.username, auth.password)
     , csv(payload)
@@ -118,7 +118,7 @@ export class NStoreClient {
 
   async has(
     namespace: string
-  , id: string
+  , id: bigint
   , mode: Mode = Mode.Exact
   , options: INStoreClientRequestOptionsWithRevision = {}
   ): Promise<boolean> {
@@ -126,7 +126,7 @@ export class NStoreClient {
     const auth = this.options.basicAuth
     const req = head(
       url(this.options.server)
-    , pathname(`/nstore/${namespace}/items/${id}`)
+    , pathname(`/nstore/${namespace}/items/${toHex(id)}`)
     , searchParams({ mode })
     , token && searchParams({ token })
     , auth && basicAuth(auth.username, auth.password)
@@ -145,7 +145,7 @@ export class NStoreClient {
 
   get(
     namespace: string
-  , id: string
+  , id: bigint
   , mode?: Mode
   , options?: INStoreClientRequestOptionsWithRevision
   ): Promise<IItem<string>> {
@@ -157,7 +157,7 @@ export class NStoreClient {
 
   getJSON<T>(
     namespace: string
-  , id: string
+  , id: bigint
   , mode?: Mode
   , options?: INStoreClientRequestOptionsWithRevision
   ): Promise<IItem<T>> {
@@ -169,7 +169,7 @@ export class NStoreClient {
 
   getCSV<T extends object>(
     namespace: string
-  , id: string
+  , id: bigint
   , mode?: Mode
   , options?: INStoreClientRequestOptionsWithRevision
   ): Promise<IItem<T[]>> {
@@ -181,7 +181,7 @@ export class NStoreClient {
 
   private async _get(
     namespace: string
-  , id: string
+  , id: bigint
   , mode: Mode = Mode.Exact
   , options: INStoreClientRequestOptionsWithRevision = {}
   ): Promise<Response> {
@@ -189,7 +189,7 @@ export class NStoreClient {
     const auth = this.options.basicAuth
     const req = get(
       url(this.options.server)
-    , pathname(`/nstore/${namespace}/items/${id}`)
+    , pathname(`/nstore/${namespace}/items/${toHex(id)}`)
     , searchParams({ mode })
     , token && searchParams({ token })
     , auth && basicAuth(auth.username, auth.password)
@@ -202,14 +202,14 @@ export class NStoreClient {
 
   async del(
     namespace: string
-  , id: string
+  , id: bigint
   , options: INStoreClientRequestOptionsWithRevision = {}
   ): Promise<void> {
     const token = options.token ?? this.options.token
     const auth = this.options.basicAuth
     const req = del(
       url(this.options.server)
-    , pathname(`/nstore/${namespace}/items/${id}`)
+    , pathname(`/nstore/${namespace}/items/${toHex(id)}`)
     , token && searchParams({ token })
     , auth && basicAuth(auth.username, auth.password)
     , options.signal && signal(options.signal)
@@ -258,7 +258,7 @@ export class NStoreClient {
   async getAllItemIds(
     namespace: string
   , options: INStoreClientRequestOptions = {}
-  ): Promise<string[]> {
+  ): Promise<bigint[]> {
     const token = options.token ?? this.options.token
     const auth = this.options.basicAuth
     const req = get(
@@ -270,9 +270,11 @@ export class NStoreClient {
     , keepalive(options.keepalive ?? this.options.keepalive)
     )
 
-    return await fetch(req)
+    const data = await fetch(req)
       .then(ok)
       .then(toJSON) as string[]
+
+    return data.map(x => BigInt(x))
   }
 
   async getAllNamespaces(
@@ -291,4 +293,8 @@ export class NStoreClient {
       .then(ok)
       .then(toJSON) as string[]
   }
+}
+
+function toHex(val: bigint): string {
+  return '0x' + val.toString(16)
 }

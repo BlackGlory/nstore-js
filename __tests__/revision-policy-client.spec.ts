@@ -18,7 +18,7 @@ describe('RevisionPolicyClient', () => {
     expect(proResult).toStrictEqual(['namespace'])
   })
 
-  it(`
+  test(`
     get(namespace: string): Promise<{
       updateRevisionRequired: boolean | null
       deleteRevisionRequired: boolean | null

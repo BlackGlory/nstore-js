@@ -20,7 +20,7 @@ export const server = setupServer(
     )
   })
 
-, rest.get('/nstore/:namespace/items/text', (req, res, ctx) => {
+, rest.get('/nstore/:namespace/items/0x1', (req, res, ctx) => {
     if (badToken(req)) return res(ctx.status(401))
 
     return res(
@@ -30,7 +30,7 @@ export const server = setupServer(
     )
   })
 
-, rest.get('/nstore/:namespace/items/json', (req, res, ctx) => {
+, rest.get('/nstore/:namespace/items/0x2', (req, res, ctx) => {
     if (badToken(req)) return res(ctx.status(401))
 
     return res(
@@ -40,7 +40,7 @@ export const server = setupServer(
     )
   })
 
-, rest.get('/nstore/:namespace/items/csv', (req, res, ctx) => {
+, rest.get('/nstore/:namespace/items/0x3', (req, res, ctx) => {
     if (badToken(req)) return res(ctx.status(401))
 
     return res(
@@ -55,7 +55,7 @@ export const server = setupServer(
 
     return res(
       ctx.status(200)
-    , ctx.json(['id'])
+    , ctx.json(['0x1'])
     )
   })
 

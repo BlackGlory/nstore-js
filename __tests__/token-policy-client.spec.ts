@@ -18,7 +18,7 @@ describe('TokenPolicyClient', () => {
     expect(proResult).toStrictEqual(['namespace'])
   })
 
-  it(`
+  test(`
     get(namespace: string): Promise<{
       writeTokenRequired: boolean | null
       readTokenRequired: boolean | null

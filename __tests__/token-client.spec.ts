@@ -18,7 +18,7 @@ describe('TokenClient', () => {
     expect(proResult).toStrictEqual(['namespace'])
   })
 
-  it(`
+  test(`
     getTokens(namespace: string): Promise<Array<{
       token: string
       write: boolean
