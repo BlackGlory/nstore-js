@@ -143,6 +143,9 @@ export class NStoreClient {
     }
   }
 
+  /**
+   * @throws {NotFound}
+   */
   get(
     namespace: string
   , id: bigint
@@ -155,6 +158,9 @@ export class NStoreClient {
     }))
   }
 
+  /**
+   * @throws {NotFound}
+   */
   getJSON<T>(
     namespace: string
   , id: bigint
@@ -167,6 +173,9 @@ export class NStoreClient {
     }))
   }
 
+  /**
+   * @throws {NotFound}
+   */
   getCSV<T extends object>(
     namespace: string
   , id: bigint
@@ -179,6 +188,9 @@ export class NStoreClient {
     }))
   }
 
+  /**
+   * @throws {NotFound}
+   */
   private async _get(
     namespace: string
   , id: bigint
