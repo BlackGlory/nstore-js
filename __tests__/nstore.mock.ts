@@ -11,7 +11,7 @@ export const server = setupServer(
     )
   })
 
-, rest.head('/nstore/:namespace/items/:id', (req, res, ctx) => {
+, rest.head('/nstore/:namespace/items/200', (req, res, ctx) => {
     if (badToken(req)) return res(ctx.status(401))
 
     return res(
@@ -20,7 +20,13 @@ export const server = setupServer(
     )
   })
 
-, rest.get('/nstore/:namespace/items/0x1', (req, res, ctx) => {
+, rest.head('/nstore/:namespace/items/404', (req, res, ctx) => {
+    if (badToken(req)) return res(ctx.status(401))
+
+    return res(ctx.status(404))
+  })
+
+, rest.get('/nstore/:namespace/items/1', (req, res, ctx) => {
     if (badToken(req)) return res(ctx.status(401))
 
     return res(
@@ -30,7 +36,7 @@ export const server = setupServer(
     )
   })
 
-, rest.get('/nstore/:namespace/items/0x2', (req, res, ctx) => {
+, rest.get('/nstore/:namespace/items/2', (req, res, ctx) => {
     if (badToken(req)) return res(ctx.status(401))
 
     return res(
@@ -40,7 +46,7 @@ export const server = setupServer(
     )
   })
 
-, rest.get('/nstore/:namespace/items/0x3', (req, res, ctx) => {
+, rest.get('/nstore/:namespace/items/3', (req, res, ctx) => {
     if (badToken(req)) return res(ctx.status(401))
 
     return res(
@@ -48,6 +54,12 @@ export const server = setupServer(
     , ctx.set('ETag', 'revision')
     , ctx.text('key,value\r\nhello,world')
     )
+  })
+
+, rest.get('/nstore/:namespace/items/404', (req, res, ctx) => {
+    if (badToken(req)) return res(ctx.status(401))
+
+    return res(ctx.status(404))
   })
 
 , rest.get('/nstore/:namespace/items', (req, res, ctx) => {

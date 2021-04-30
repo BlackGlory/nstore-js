@@ -4,6 +4,7 @@ import { url, pathname, json, text, csv, searchParams, signal, basicAuth, keepal
 import { NotFound } from '@blackglory/http-status'
 import { ok, toJSON, toCSV, toText } from 'extra-response'
 
+export { NotFound } from '@blackglory/http-status'
 export { HTTPClientError } from '@blackglory/http-status'
 
 interface IItem<T> {
@@ -63,7 +64,7 @@ export class NStoreClient {
     const auth = this.options.basicAuth
     const req = put(
       url(this.options.server)
-    , pathname(`/nstore/${namespace}/items/${toHex(id)}`)
+    , pathname(`/nstore/${namespace}/items/${id}`)
     , token && searchParams({ token })
     , auth && basicAuth(auth.username, auth.password)
     , text(payload)
@@ -84,7 +85,7 @@ export class NStoreClient {
     const auth = this.options.basicAuth
     const req = put(
       url(this.options.server)
-    , pathname(`/nstore/${namespace}/items/${toHex(id)}`)
+    , pathname(`/nstore/${namespace}/items/${id}`)
     , token && searchParams({ token })
     , auth && basicAuth(auth.username, auth.password)
     , json(payload)
@@ -105,7 +106,7 @@ export class NStoreClient {
     const auth = this.options.basicAuth
     const req = put(
       url(this.options.server)
-    , pathname(`/nstore/${namespace}/items/${toHex(id)}`)
+    , pathname(`/nstore/${namespace}/items/${id}`)
     , token && searchParams({ token })
     , auth && basicAuth(auth.username, auth.password)
     , csv(payload)
@@ -126,7 +127,7 @@ export class NStoreClient {
     const auth = this.options.basicAuth
     const req = head(
       url(this.options.server)
-    , pathname(`/nstore/${namespace}/items/${toHex(id)}`)
+    , pathname(`/nstore/${namespace}/items/${id}`)
     , searchParams({ mode })
     , token && searchParams({ token })
     , auth && basicAuth(auth.username, auth.password)
@@ -158,6 +159,20 @@ export class NStoreClient {
     }))
   }
 
+  async tryGet(
+    namespace: string
+  , id: bigint
+  , mode?: Mode
+  , options?: INStoreClientRequestOptionsWithRevision
+  ): Promise<IItem<string> | null> {
+    try {
+      return await this.get(namespace, id, mode, options)
+    } catch (e) {
+      if (e instanceof NotFound) return null
+      throw e
+    }
+  }
+
   /**
    * @throws {NotFound}
    */
@@ -171,6 +186,20 @@ export class NStoreClient {
       revision: res.headers.get('ETag')!
     , payload: await toJSON(res)
     }))
+  }
+
+  async tryGetJSON<T>(
+    namespace: string
+  , id: bigint
+  , mode?: Mode
+  , options?: INStoreClientRequestOptionsWithRevision
+  ): Promise<IItem<T> | null> {
+    try {
+      return await this.getJSON<T>(namespace, id, mode, options)
+    } catch (e) {
+      if (e instanceof NotFound) return null
+      throw e
+    }
   }
 
   /**
@@ -188,6 +217,20 @@ export class NStoreClient {
     }))
   }
 
+  async tryGetCSV<T extends object>(
+    namespace: string
+  , id: bigint
+  , mode?: Mode
+  , options?: INStoreClientRequestOptionsWithRevision
+  ): Promise<IItem<T[]> | null> {
+    try {
+      return await this.getCSV<T>(namespace, id, mode, options)
+    } catch (e) {
+      if (e instanceof NotFound) return null
+      throw e
+    }
+  }
+
   /**
    * @throws {NotFound}
    */
@@ -201,7 +244,7 @@ export class NStoreClient {
     const auth = this.options.basicAuth
     const req = get(
       url(this.options.server)
-    , pathname(`/nstore/${namespace}/items/${toHex(id)}`)
+    , pathname(`/nstore/${namespace}/items/${id}`)
     , searchParams({ mode })
     , token && searchParams({ token })
     , auth && basicAuth(auth.username, auth.password)
@@ -221,7 +264,7 @@ export class NStoreClient {
     const auth = this.options.basicAuth
     const req = del(
       url(this.options.server)
-    , pathname(`/nstore/${namespace}/items/${toHex(id)}`)
+    , pathname(`/nstore/${namespace}/items/${id}`)
     , token && searchParams({ token })
     , auth && basicAuth(auth.username, auth.password)
     , options.signal && signal(options.signal)
@@ -305,8 +348,4 @@ export class NStoreClient {
       .then(ok)
       .then(toJSON) as string[]
   }
-}
-
-function toHex(val: bigint): string {
-  return '0x' + val.toString(16)
 }

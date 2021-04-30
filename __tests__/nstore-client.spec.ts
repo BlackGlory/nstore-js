@@ -1,6 +1,7 @@
 import { server } from '@test/nstore.mock'
-import { NStoreClient } from '@src/nstore-client'
+import { NStoreClient, NotFound } from '@src/nstore-client'
 import { TOKEN } from '@test/utils'
+import { getErrorPromise } from 'return-style'
 import '@blackglory/jest-matchers'
 import 'jest-extended'
 
@@ -58,77 +59,253 @@ describe('NStoreClient', () => {
     expect(proResult).toBeUndefined()
   })
 
-  test('has(namespace, string, id: bigint): Promise<boolean>', async () => {
-    const client = createClient()
-    const namespace = 'namespace'
-    const id = 1n
+  describe('has(namespace, string, id: bigint): Promise<boolean>', () => {
+    describe('exist', () => {
+      it('return true', async () => {
+        const client = createClient()
+        const namespace = 'namespace'
 
-    const result = client.has(namespace, id)
-    const proResult = await result
+        const result = client.has(namespace, 200n)
+        const proResult = await result
 
-    expect(result).toBePromise()
-    expect(proResult).toBeTrue()
+        expect(result).toBePromise()
+        expect(proResult).toBeTrue()
+      })
+    })
+
+    describe('not exist', () => {
+      it('return false', async () => {
+        const client = createClient()
+        const namespace = 'namespace'
+
+        const result = client.has(namespace, 404n)
+        const proResult = await result
+
+        expect(result).toBePromise()
+        expect(proResult).toBeFalse()
+      })
+    })
   })
 
-  test(`
+  describe(`
     get(
       namespace: string
-    , id: bigint
+    , id: string
     ): Promise<{ revision: string; payload: string }>
-  `, async () => {
-    const client = createClient()
-    const namespace = 'namespace'
+  `, () => {
+    describe('exist', () => {
+      it('return item', async () => {
+        const client = createClient()
+        const namespace = 'namespace'
 
-    const result = client.get(namespace, 1n)
-    const proResult = await result
+        const result = client.get(namespace, 1n)
+        const proResult = await result
 
-    expect(result).toBePromise()
-    expect(proResult).toStrictEqual({
-      revision: 'revision'
-    , payload: 'text'
+        expect(result).toBePromise()
+        expect(proResult).toStrictEqual({
+          revision: 'revision'
+        , payload: 'text'
+        })
+      })
+    })
+
+    describe('not exist', () => {
+      it('throw NotFound', async () => {
+        const client = createClient()
+        const namespace = 'namespace'
+
+        const result = client.get(namespace, 404n)
+        const err = await getErrorPromise(result)
+
+        expect(result).toBePromise()
+        expect(err).toBeInstanceOf(NotFound)
+      })
     })
   })
 
-  test(`
+  describe(`
+    tryGet(
+      namespace: string
+    , id: bigint
+    ): Promise<{ revision: string; payload: string } | null>
+  `, () => {
+    describe('exist', () => {
+      it('return item', async () => {
+        const client = createClient()
+        const namespace = 'namespace'
+
+        const result = client.tryGet(namespace, 1n)
+        const proResult = await result
+
+        expect(result).toBePromise()
+        expect(proResult).toStrictEqual({
+          revision: 'revision'
+        , payload: 'text'
+        })
+      })
+    })
+
+    describe('not exist', () => {
+      it('return null', async () => {
+        const client = createClient()
+        const namespace = 'namespace'
+
+        const result = client.tryGet(namespace, 404n)
+        const proResult = await result
+
+        expect(result).toBePromise()
+        expect(proResult).toBeNull()
+      })
+    })
+  })
+
+  describe(`
     getJSON(
       namespace: string
-    , id: string
+    , id: bigint
     ): Promise<{ revision: string; payload: Json }>
-  `, async () => {
-    const client = createClient()
-    const namespace = 'namespace'
+  `, () => {
+    describe('exist', () => {
+      it('return item', async () => {
+        const client = createClient()
+        const namespace = 'namespace'
 
-    const result = client.getJSON(namespace, 2n)
-    const proResult = await result
+        const result = client.getJSON(namespace, 2n)
+        const proResult = await result
 
-    expect(result).toBePromise()
-    expect(proResult).toStrictEqual({
-      revision: 'revision'
-    , payload: { 'hello': 'world' }
+        expect(result).toBePromise()
+        expect(proResult).toStrictEqual({
+          revision: 'revision'
+        , payload: { 'hello': 'world' }
+        })
+      })
+    })
+
+    describe('not exist', () => {
+      it('throw NotFound', async () => {
+        const client = createClient()
+        const namespace = 'namespace'
+
+        const result = client.getJSON(namespace, 404n)
+        const err = await getErrorPromise(result)
+
+        expect(result).toBePromise()
+        expect(err).toBeInstanceOf(NotFound)
+      })
     })
   })
 
-  test(`
+  describe(`
+    tryGetJSON(
+      namespace: string
+    , id: bigint
+    ): Promise<{ revision: string; payload: Json } | null>
+  `, () => {
+    describe('exist', () => {
+      it('return item', async () => {
+        const client = createClient()
+        const namespace = 'namespace'
+
+        const result = client.tryGetJSON(namespace, 2n)
+        const proResult = await result
+
+        expect(result).toBePromise()
+        expect(proResult).toStrictEqual({
+          revision: 'revision'
+        , payload: { 'hello': 'world' }
+        })
+      })
+    })
+
+    describe('not exist', () => {
+      it('throw NotFound', async () => {
+        const client = createClient()
+        const namespace = 'namespace'
+
+        const result = client.tryGetJSON(namespace, 404n)
+        const proResult = await result
+
+        expect(result).toBePromise()
+        expect(proResult).toBeNull()
+      })
+    })
+  })
+
+  describe(`
     getCSV<T extends object>(
       namespace: string
-    , id: string
+    , id: bigint
     ): Promise<{ revision: string; payload: T[] }>
-  `, async () => {
-    const client = createClient()
-    const namespace = 'namespace'
+  `, () => {
+    describe('exist', () => {
+      it('return item', async () => {
+        const client = createClient()
+        const namespace = 'namespace'
 
-    const result = client.getCSV(namespace, 3n)
-    const proResult = await result
+        const result = client.getCSV(namespace, 3n)
+        const proResult = await result
 
-    expect(result).toBePromise()
-    expect(proResult).toStrictEqual({
-      revision: 'revision'
-    , payload: [
-        { key: 'hello', value: 'world' }
-      ]
+        expect(result).toBePromise()
+        expect(proResult).toStrictEqual({
+          revision: 'revision'
+        , payload: [
+            { key: 'hello', value: 'world' }
+          ]
+        })
+      })
+    })
+
+    describe('not exist', () => {
+      it('thrown NotFound', async () => {
+        const client = createClient()
+        const namespace = 'namespace'
+
+        const result = client.getCSV(namespace, 404n)
+        const err = await getErrorPromise(result)
+
+        expect(result).toBePromise()
+        expect(err).toBeInstanceOf(NotFound)
+      })
     })
   })
 
+  describe(`
+    tryGetCSV<T extends object>(
+      namespace: string
+    , id: bigint
+    ): Promise<{ revision: string; payload: T[] } | null>
+  `, () => {
+    describe('exist', () => {
+      it('return item', async () => {
+        const client = createClient()
+        const namespace = 'namespace'
+
+        const result = client.tryGetCSV(namespace, 3n)
+        const proResult = await result
+
+        expect(result).toBePromise()
+        expect(proResult).toStrictEqual({
+          revision: 'revision'
+        , payload: [
+            { key: 'hello', value: 'world' }
+          ]
+        })
+      })
+    })
+
+    describe('not exist', () => {
+      it('thrown NotFound', async () => {
+        const client = createClient()
+        const namespace = 'namespace'
+
+        const result = client.tryGetCSV(namespace, 404n)
+        const proResult = await result
+
+        expect(result).toBePromise()
+        expect(proResult).toBeNull()
+      })
+    })
+  })
   test('getAllItemIds(namespace: string): Promise<bigint[]>', async () => {
     const client = createClient()
     const namespace = 'namespace'
