@@ -109,21 +109,7 @@ NStoreClient#get(
 ): Promise<{
   revision: string
   payload: string
-}>
-```
-
-#### tryGet
-
-```ts
-NStoreClient#tryGet(
-  namespace: string
-, id: bigint
-, mode?: Mode
-, options?: INStoreClientRequestOptionsWithRevision
-): Promise<{
-  revision: string
-  payload: string
-} | null>
+} | undefined>
 ```
 
 #### getJSON
@@ -137,21 +123,7 @@ NStoreClient#getJSON(
 ): Promise<{
   revision: string
   payload: Json
-}>
-```
-
-#### tryGetJSON
-
-```ts
-NStoreClient#tryGetJSON(
-  namespace: string
-, id: bigint
-, mode?: Mode
-, options?: INStoreClientRequestOptionsWithRevision
-): Promise<{
-  revision: string
-  payload: Json
-} | null>
+} | undefined>
 ```
 
 #### getCSV
@@ -165,21 +137,7 @@ NStoreClient#getCSV<T extends object>(
 ): Promise<{
   revision: string
   payload: T[]
-}>
-```
-
-#### tryGetCSV
-
-```ts
-NStoreClient#tryGetCSV<T extends object>(
-  namespace: string
-, id: bigint
-, mode?: Mode
-, options?: INStoreClientRequestOptionsWithRevision
-): Promise<{
-  revision: string
-  payload: T[]
-} | null>
+} | undefined>
 ```
 
 #### del
