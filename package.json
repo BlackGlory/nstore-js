@@ -68,6 +68,6 @@
     "extra-fetch": "^1.7.2",
     "extra-request": "^2.1.5",
     "extra-response": "^0.3.5",
-    "justypes": "^0.1.4"
+    "justypes": "^0.1.5"
   }
 }
