@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.2.1](https://github.com/BlackGlory/nstore-js/compare/v0.2.0...v0.2.1) (2021-09-15)
+
+
+### Features
+
+* add keepalive, timeout ([49337a7](https://github.com/BlackGlory/nstore-js/commit/49337a77e52b9869a9ec7628d026f431d3685c9a))
+
 ## [0.2.0](https://github.com/BlackGlory/nstore-js/compare/v0.1.1...v0.2.0) (2021-07-04)
 
 
