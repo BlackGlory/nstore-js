@@ -1,8 +1,11 @@
 import { fetch } from 'extra-fetch'
-import { head, put, get, del } from 'extra-request'
-import { url, pathname, json, text, csv, searchParams, signal, basicAuth, keepalive } from 'extra-request/lib/es2018/transformers'
+import { head, put, get, del, IHTTPOptionsTransformer } from 'extra-request'
+import { url, pathname, json, text, csv, searchParams, signal, basicAuth, keepalive }
+  from 'extra-request/lib/es2018/transformers'
 import { NotFound } from '@blackglory/http-status'
 import { ok, toJSON, toCSV, toText } from 'extra-response'
+import { timeoutSignal, raceAbortSignals } from 'extra-promise'
+import { Falsy } from 'justypes'
 
 export { HTTPClientError } from '@blackglory/http-status'
 
@@ -33,12 +36,14 @@ export interface INStoreClientOptions {
     password: string
   }
   keepalive?: boolean
+  timeout?: number
 }
 
 export interface INStoreClientRequestOptions {
   signal?: AbortSignal
   token?: string
   keepalive?: boolean
+  timeout?: number | false
 }
 
 export interface INStoreClientRequestOptionsWithRevision extends INStoreClientRequestOptions {
@@ -48,10 +53,34 @@ export interface INStoreClientRequestOptionsWithRevision extends INStoreClientRe
 export interface INStoreClientRequestOptionsWithoutToken {
   signal?: AbortSignal
   keepalive?: boolean
+  timeout?: number | false
 }
 
 export class NStoreClient {
   constructor(private options: INStoreClientOptions) {}
+
+  private getCommonTransformers(
+    options: INStoreClientRequestOptions | INStoreClientRequestOptionsWithoutToken
+  ): Array<IHTTPOptionsTransformer | Falsy> {
+    const token = 'token' in options
+                  ? (options.token ?? this.options.token)
+                  : this.options.token
+    const auth = this.options.basicAuth
+
+    return [
+      url(this.options.server)
+    , auth && basicAuth(auth.username, auth.password)
+    , token && searchParams({ token })
+    , signal(raceAbortSignals([
+        options.signal
+      , options.timeout !== false && (
+          (options.timeout && timeoutSignal(options.timeout)) ??
+          (this.options.timeout && timeoutSignal(this.options.timeout))
+        )
+      ]))
+    , keepalive(options.keepalive ?? this.options.keepalive)
+    ]
+  }
 
   async set(
     namespace: string
@@ -59,16 +88,10 @@ export class NStoreClient {
   , payload: string
   , options: INStoreClientRequestOptionsWithRevision = {}
   ): Promise<void> {
-    const token = options.token ?? this.options.token
-    const auth = this.options.basicAuth
     const req = put(
-      url(this.options.server)
+      ...this.getCommonTransformers(options)
     , pathname(`/nstore/${namespace}/items/${id}`)
-    , token && searchParams({ token })
-    , auth && basicAuth(auth.username, auth.password)
     , text(payload)
-    , options.signal && signal(options.signal)
-    , keepalive(options.keepalive ?? this.options.keepalive)
     )
 
     await fetch(req).then(ok)
@@ -80,16 +103,10 @@ export class NStoreClient {
   , payload: T
   , options: INStoreClientRequestOptionsWithRevision = {}
   ): Promise<void> {
-    const token = options.token ?? this.options.token
-    const auth = this.options.basicAuth
     const req = put(
-      url(this.options.server)
+      ...this.getCommonTransformers(options)
     , pathname(`/nstore/${namespace}/items/${id}`)
-    , token && searchParams({ token })
-    , auth && basicAuth(auth.username, auth.password)
     , json(payload)
-    , options.signal && signal(options.signal)
-    , keepalive(options.keepalive ?? this.options.keepalive)
     )
 
     await fetch(req).then(ok)
@@ -101,16 +118,10 @@ export class NStoreClient {
   , payload: T[]
   , options: INStoreClientRequestOptionsWithRevision = {}
   ): Promise<void> {
-    const token = options.token ?? this.options.token
-    const auth = this.options.basicAuth
     const req = put(
-      url(this.options.server)
+      ...this.getCommonTransformers(options)
     , pathname(`/nstore/${namespace}/items/${id}`)
-    , token && searchParams({ token })
-    , auth && basicAuth(auth.username, auth.password)
     , csv(payload)
-    , options.signal && signal(options.signal)
-    , keepalive(options.keepalive ?? this.options.keepalive)
     )
 
     await fetch(req).then(ok)
@@ -122,16 +133,10 @@ export class NStoreClient {
   , mode: Mode = Mode.Exact
   , options: INStoreClientRequestOptionsWithRevision = {}
   ): Promise<boolean> {
-    const token = options.token ?? this.options.token
-    const auth = this.options.basicAuth
     const req = head(
-      url(this.options.server)
+      ...this.getCommonTransformers(options)
     , pathname(`/nstore/${namespace}/items/${id}`)
     , searchParams({ mode })
-    , token && searchParams({ token })
-    , auth && basicAuth(auth.username, auth.password)
-    , options.signal && signal(options.signal)
-    , keepalive(options.keepalive ?? this.options.keepalive)
     )
 
     try {
@@ -203,16 +208,10 @@ export class NStoreClient {
   , mode: Mode = Mode.Exact
   , options: INStoreClientRequestOptionsWithRevision = {}
   ): Promise<Response> {
-    const token = options.token ?? this.options.token
-    const auth = this.options.basicAuth
     const req = get(
-      url(this.options.server)
+      ...this.getCommonTransformers(options)
     , pathname(`/nstore/${namespace}/items/${id}`)
     , searchParams({ mode })
-    , token && searchParams({ token })
-    , auth && basicAuth(auth.username, auth.password)
-    , options.signal && signal(options.signal)
-    , keepalive(options.keepalive ?? this.options.keepalive)
     )
 
     return await fetch(req).then(ok)
@@ -223,15 +222,9 @@ export class NStoreClient {
   , id: bigint
   , options: INStoreClientRequestOptionsWithRevision = {}
   ): Promise<void> {
-    const token = options.token ?? this.options.token
-    const auth = this.options.basicAuth
     const req = del(
-      url(this.options.server)
+      ...this.getCommonTransformers(options)
     , pathname(`/nstore/${namespace}/items/${id}`)
-    , token && searchParams({ token })
-    , auth && basicAuth(auth.username, auth.password)
-    , options.signal && signal(options.signal)
-    , keepalive(options.keepalive ?? this.options.keepalive)
     )
 
     await fetch(req).then(ok)
@@ -241,15 +234,9 @@ export class NStoreClient {
     namespace: string
   , options: INStoreClientRequestOptions = {}
   ): Promise<void> {
-    const token = options.token ?? this.options.token
-    const auth = this.options.basicAuth
     const req = del(
-      url(this.options.server)
+      ...this.getCommonTransformers(options)
     , pathname(`/nstore/${namespace}`)
-    , token && searchParams({ token })
-    , auth && basicAuth(auth.username, auth.password)
-    , options.signal && signal(options.signal)
-    , keepalive(options.keepalive ?? this.options.keepalive)
     )
 
     await fetch(req).then(ok)
@@ -259,13 +246,9 @@ export class NStoreClient {
     namespace: string
   , options: INStoreClientRequestOptionsWithoutToken = {}
   ): Promise<IInfo> {
-    const auth = this.options.basicAuth
     const req = get(
-      url(this.options.server)
+      ...this.getCommonTransformers(options)
     , pathname(`/nstore/${namespace}/stats`)
-    , auth && basicAuth(auth.username, auth.password)
-    , options.signal && signal(options.signal)
-    , keepalive(options.keepalive ?? this.options.keepalive)
     )
 
     return await fetch(req)
@@ -277,15 +260,9 @@ export class NStoreClient {
     namespace: string
   , options: INStoreClientRequestOptions = {}
   ): Promise<bigint[]> {
-    const token = options.token ?? this.options.token
-    const auth = this.options.basicAuth
     const req = get(
-      url(this.options.server)
+      ...this.getCommonTransformers(options)
     , pathname(`/nstore/${namespace}/items`)
-    , token && searchParams({ token })
-    , auth && basicAuth(auth.username, auth.password)
-    , options.signal && signal(options.signal)
-    , keepalive(options.keepalive ?? this.options.keepalive)
     )
 
     const data = await fetch(req)
@@ -298,13 +275,9 @@ export class NStoreClient {
   async getAllNamespaces(
     options: INStoreClientRequestOptionsWithoutToken = {}
   ): Promise<string[]> {
-    const auth = this.options.basicAuth
     const req = get(
-      url(this.options.server)
+      ...this.getCommonTransformers(options)
     , pathname('/nstore')
-    , auth && basicAuth(auth.username, auth.password)
-    , options.signal && signal(options.signal)
-    , keepalive(options.keepalive ?? this.options.keepalive)
     )
 
     return await fetch(req)

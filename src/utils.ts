@@ -1,13 +1,31 @@
-import { IHTTPOptions, IHTTPOptionsTransformer } from 'extra-request'
-import { Headers } from 'extra-fetch'
+import { IHTTPOptionsTransformer } from 'extra-request'
+import { url, signal, keepalive, bearerAuth } from 'extra-request/lib/es2018/transformers'
+import { timeoutSignal, raceAbortSignals } from 'extra-promise'
+import type { INStoreManagerOptions } from './nstore-manager'
 
-export function password(password: string): IHTTPOptionsTransformer {
-  return (options: IHTTPOptions) => {
-    const headers = new Headers(options.headers)
-    headers.set('Authorization', `Bearer ${password}`)
-    return {
-      ...options
-    , headers
-    }
+export interface INStoreManagerRequestOptions {
+  signal?: AbortSignal
+  keepalive?: boolean
+  timeout?: number | false
+}
+
+export class NStoreManagerBase {
+  constructor(private options: INStoreManagerOptions) {}
+
+  protected getCommonTransformers(
+    options: INStoreManagerRequestOptions
+  ): IHTTPOptionsTransformer[] {
+    return [
+      url(this.options.server)
+    , bearerAuth(this.options.adminPassword)
+    , signal(raceAbortSignals([
+        options.signal
+      , options.timeout !== false && (
+          (options.timeout && timeoutSignal(options.timeout)) ??
+          (this.options.timeout && timeoutSignal(this.options.timeout))
+        )
+      ]))
+    , keepalive(options.keepalive ?? this.options.keepalive)
+    ]
   }
 }

@@ -21,6 +21,7 @@ new NStoreClient({
   , password: string
   }
 , keepalive?: boolean
+, timeout?: number
 })
 ```
 
@@ -29,6 +30,7 @@ interface INStoreClientRequestOptions {
   signal?: AbortSignal
   token?: string
   keepalive?: boolean
+  timeout?: number | false
 }
 
 interface INStoreClientRequestOptionsWithRevision extends INStoreClientRequestOptions {
@@ -38,6 +40,7 @@ interface INStoreClientRequestOptionsWithRevision extends INStoreClientRequestOp
 interface INStoreClientRequestOptionsWithoutToken {
   signal?: AbortSignal
   keepalive?: boolean
+  timeout?: number | false
 }
 ```
 
@@ -194,12 +197,16 @@ NStoreClient#stats(
 new NStoreManager({
   server: string
   adminPassword: string
+  keepalive?: boolean
+  timeout?: number
 })
 ```
 
 ```ts
 interface INStoreManagerRequestOptions {
   signal?: AbortSignal
+  keepalive?: boolean
+  timeout?: number | false
 }
 ```
 
