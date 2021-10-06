@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.2.4](https://github.com/BlackGlory/nstore-js/compare/v0.2.3...v0.2.4) (2021-10-06)
+
+
+### Features
+
+* export AbortError ([33e0574](https://github.com/BlackGlory/nstore-js/commit/33e0574327057e43dcceb492f6449b0ccf4eefbf))
+
 ### [0.2.3](https://github.com/BlackGlory/nstore-js/compare/v0.2.2...v0.2.3) (2021-09-18)
 
 
