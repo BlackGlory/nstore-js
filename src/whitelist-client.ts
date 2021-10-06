@@ -5,6 +5,9 @@ import { ok, toJSON } from 'extra-response'
 import { INStoreManagerRequestOptions, NStoreManagerBase } from './utils'
 
 export class WhitelistClient extends NStoreManagerBase {
+  /**
+   * @throws {AbortError}
+   */
   async getNamespaces(options: INStoreManagerRequestOptions = {}): Promise<string[]> {
     const req = get(
       ...this.getCommonTransformers(options)
@@ -16,6 +19,9 @@ export class WhitelistClient extends NStoreManagerBase {
       .then(toJSON) as string[]
   }
 
+  /**
+   * @throws {AbortError}
+   */
   async add(namespace: string, options: INStoreManagerRequestOptions = {}): Promise<void> {
     const req = put(
       ...this.getCommonTransformers(options)
@@ -25,6 +31,9 @@ export class WhitelistClient extends NStoreManagerBase {
     await fetch(req).then(ok)
   }
 
+  /**
+   * @throws {AbortError}
+   */
   async remove(namespace: string, options: INStoreManagerRequestOptions = {}): Promise<void> {
     const req = del(
       ...this.getCommonTransformers(options)

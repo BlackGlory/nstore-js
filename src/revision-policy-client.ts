@@ -10,6 +10,9 @@ interface IRevisionPolicy {
 }
 
 export class RevisionPolicyClient extends NStoreManagerBase {
+  /**
+   * @throws {AbortError}
+   */
   async getNamespaces(options: INStoreManagerRequestOptions = {}): Promise<string[]> {
     const req = get(
       ...this.getCommonTransformers(options)
@@ -21,6 +24,9 @@ export class RevisionPolicyClient extends NStoreManagerBase {
       .then(toJSON) as string[]
   }
 
+  /**
+   * @throws {AbortError}
+   */
   async get(
     namespace: string
   , options: INStoreManagerRequestOptions = {}
@@ -35,6 +41,9 @@ export class RevisionPolicyClient extends NStoreManagerBase {
       .then(toJSON) as IRevisionPolicy
   }
 
+  /**
+   * @throws {AbortError}
+   */
   async setUpdateRevisionRequired(
     namespace: string
   , val: boolean
@@ -49,6 +58,9 @@ export class RevisionPolicyClient extends NStoreManagerBase {
     await fetch(req).then(ok)
   }
 
+  /**
+   * @throws {AbortError}
+   */
   async removeUpdateRevisionRequired(
     namespace: string
   , options: INStoreManagerRequestOptions = {}
@@ -61,6 +73,9 @@ export class RevisionPolicyClient extends NStoreManagerBase {
     await fetch(req).then(ok)
   }
 
+  /**
+   * @throws {AbortError}
+   */
   async setDeleteRevisionRequired(
     namespace: string
   , val: boolean
@@ -75,6 +90,9 @@ export class RevisionPolicyClient extends NStoreManagerBase {
     await fetch(req).then(ok)
   }
 
+  /**
+   * @throws {AbortError}
+   */
   async removeDeleteRevisionRequired(
     namespace: string
   , options: INStoreManagerRequestOptions = {}

@@ -10,7 +10,10 @@ interface ITokenPolicy {
   deleteTokenRequired: boolean | null
 }
 
-  export class TokenPolicyClient extends NStoreManagerBase {
+export class TokenPolicyClient extends NStoreManagerBase {
+  /**
+   * @throws {AbortError}
+   */
   async getNamespaces(options: INStoreManagerRequestOptions = {}): Promise<string[]> {
     const req = get(
       ...this.getCommonTransformers(options)
@@ -22,6 +25,9 @@ interface ITokenPolicy {
       .then(toJSON) as string[]
   }
 
+  /**
+   * @throws {AbortError}
+   */
   async get(
     namespace: string
   , options: INStoreManagerRequestOptions = {}
@@ -36,6 +42,9 @@ interface ITokenPolicy {
       .then(toJSON) as ITokenPolicy
   }
 
+  /**
+   * @throws {AbortError}
+   */
   async setWriteTokenRequired(
     namespace: string
   , val: boolean
@@ -50,6 +59,9 @@ interface ITokenPolicy {
     await fetch(req).then(ok)
   }
 
+  /**
+   * @throws {AbortError}
+   */
   async removeWriteTokenRequired(
     namespace: string
   , options: INStoreManagerRequestOptions = {}
@@ -62,6 +74,9 @@ interface ITokenPolicy {
     await fetch(req).then(ok)
   }
 
+  /**
+   * @throws {AbortError}
+   */
   async setReadTokenRequired(
     namespace: string
   , val: boolean
@@ -76,6 +91,9 @@ interface ITokenPolicy {
     await fetch(req).then(ok)
   }
 
+  /**
+   * @throws {AbortError}
+   */
   async removeReadTokenRequired(
     namespace: string
   , options: INStoreManagerRequestOptions = {}
@@ -88,6 +106,9 @@ interface ITokenPolicy {
     await fetch(req).then(ok)
   }
 
+  /**
+   * @throws {AbortError}
+   */
   async setDeleteTokenRequired(
     namespace: string
   , val: boolean
@@ -102,6 +123,9 @@ interface ITokenPolicy {
     await fetch(req).then(ok)
   }
 
+  /**
+   * @throws {AbortError}
+   */
   async removeDeleteTokenRequired(
     namespace: string
   , options: INStoreManagerRequestOptions = {}

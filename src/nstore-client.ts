@@ -82,6 +82,9 @@ export class NStoreClient {
     ]
   }
 
+  /**
+   * @throws {AbortError}
+   */
   async set(
     namespace: string
   , id: bigint
@@ -97,6 +100,9 @@ export class NStoreClient {
     await fetch(req).then(ok)
   }
 
+  /**
+   * @throws {AbortError}
+   */
   async setJSON<T>(
     namespace: string
   , id: bigint
@@ -112,6 +118,9 @@ export class NStoreClient {
     await fetch(req).then(ok)
   }
 
+  /**
+   * @throws {AbortError}
+   */
   async setCSV<T extends object>(
     namespace: string
   , id: bigint
@@ -127,6 +136,9 @@ export class NStoreClient {
     await fetch(req).then(ok)
   }
 
+  /**
+   * @throws {AbortError}
+   */
   async has(
     namespace: string
   , id: bigint
@@ -148,6 +160,9 @@ export class NStoreClient {
     }
   }
 
+  /**
+   * @throws {AbortError}
+   */
   async get(
     namespace: string
   , id: bigint
@@ -165,6 +180,9 @@ export class NStoreClient {
     }
   }
 
+  /**
+   * @throws {AbortError}
+   */
   async getJSON<T>(
     namespace: string
   , id: bigint
@@ -182,6 +200,9 @@ export class NStoreClient {
     }
   }
 
+  /**
+   * @throws {AbortError}
+   */
   async getCSV<T extends object>(
     namespace: string
   , id: bigint
@@ -201,6 +222,7 @@ export class NStoreClient {
 
   /**
    * @throws {NotFound}
+   * @throws {AbortError}
    */
   private async _get(
     namespace: string
@@ -217,6 +239,9 @@ export class NStoreClient {
     return await fetch(req).then(ok)
   }
 
+  /**
+   * @throws {AbortError}
+   */
   async del(
     namespace: string
   , id: bigint
@@ -230,6 +255,9 @@ export class NStoreClient {
     await fetch(req).then(ok)
   }
 
+  /**
+   * @throws {AbortError}
+   */
   async clear(
     namespace: string
   , options: INStoreClientRequestOptions = {}
@@ -242,6 +270,9 @@ export class NStoreClient {
     await fetch(req).then(ok)
   }
 
+  /**
+   * @throws {AbortError}
+   */
   async stats(
     namespace: string
   , options: INStoreClientRequestOptionsWithoutToken = {}
@@ -256,6 +287,9 @@ export class NStoreClient {
       .then(toJSON) as IInfo
   }
 
+  /**
+   * @throws {AbortError}
+   */
   async getAllItemIds(
     namespace: string
   , options: INStoreClientRequestOptions = {}
@@ -272,6 +306,9 @@ export class NStoreClient {
     return data.map(x => BigInt(x))
   }
 
+  /**
+   * @throws {AbortError}
+   */
   async getAllNamespaces(
     options: INStoreClientRequestOptionsWithoutToken = {}
   ): Promise<string[]> {

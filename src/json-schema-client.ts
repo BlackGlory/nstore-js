@@ -6,6 +6,9 @@ import { ok, toJSON } from 'extra-response'
 import { INStoreManagerRequestOptions, NStoreManagerBase } from './utils'
 
 export class JsonSchemaClient extends NStoreManagerBase {
+  /**
+   * @throws {AbortError}
+   */
   async getNamespaces(options: INStoreManagerRequestOptions = {}): Promise<string[]> {
     const req = get(
       ...this.getCommonTransformers(options)
@@ -17,6 +20,9 @@ export class JsonSchemaClient extends NStoreManagerBase {
       .then(toJSON) as string[]
   }
 
+  /**
+   * @throws {AbortError}
+   */
   async get(namespace: string, options: INStoreManagerRequestOptions = {}): Promise<unknown> {
     const req = get(
       ...this.getCommonTransformers(options)
@@ -28,6 +34,9 @@ export class JsonSchemaClient extends NStoreManagerBase {
       .then(toJSON)
   }
 
+  /**
+   * @throws {AbortError}
+   */
   async set(
     namespace: string
   , schema: Json
@@ -42,6 +51,9 @@ export class JsonSchemaClient extends NStoreManagerBase {
     await fetch(req).then(ok)
   }
 
+  /**
+   * @throws {AbortError}
+   */
   async remove(
     namespace: string
   , options: INStoreManagerRequestOptions = {}
