@@ -2,7 +2,6 @@ import { server } from '@test/nstore.mock'
 import { NStoreClient } from '@src/nstore-client'
 import { TOKEN } from '@test/utils'
 import '@blackglory/jest-matchers'
-import 'jest-extended'
 
 beforeAll(() => server.listen({ onUnhandledRequest: 'error' }))
 beforeEach(() => server.resetHandlers())
@@ -68,7 +67,7 @@ describe('NStoreClient', () => {
         const proResult = await result
 
         expect(result).toBePromise()
-        expect(proResult).toBeTrue()
+        expect(proResult).toBe(true)
       })
     })
 
@@ -81,7 +80,7 @@ describe('NStoreClient', () => {
         const proResult = await result
 
         expect(result).toBePromise()
-        expect(proResult).toBeFalse()
+        expect(proResult).toBe(false)
       })
     })
   })
