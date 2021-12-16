@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.3.0](https://github.com/BlackGlory/nstore-js/compare/v0.2.5...v0.3.0) (2021-12-16)
+
+
+### ⚠ BREAKING CHANGES
+
+* - The minimum version is Node.js v16
+
+* update dependencies ([8289e6a](https://github.com/BlackGlory/nstore-js/commit/8289e6a581e326b9a05a359169e1eaa2bcfbfae2))
+
 ### [0.2.5](https://github.com/BlackGlory/nstore-js/compare/v0.2.4...v0.2.5) (2021-10-14)
 
 ### [0.2.4](https://github.com/BlackGlory/nstore-js/compare/v0.2.3...v0.2.4) (2021-10-06)
