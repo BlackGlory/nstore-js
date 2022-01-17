@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.4.0](https://github.com/BlackGlory/nstore-js/compare/v0.3.1...v0.4.0) (2022-01-17)
+
+
+### ⚠ BREAKING CHANGES
+
+* requires NStore 0.1.7
+
+### Features
+
+* add Accept-Version headers ([9145962](https://github.com/BlackGlory/nstore-js/commit/91459627c2bb061128f6e888ac8f55ffcb372e46))
+
 ### [0.3.1](https://github.com/BlackGlory/nstore-js/compare/v0.3.0...v0.3.1) (2021-12-17)
 
 ## [0.3.0](https://github.com/BlackGlory/nstore-js/compare/v0.2.5...v0.3.0) (2021-12-16)
