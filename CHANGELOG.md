@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.4.1](https://github.com/BlackGlory/nstore-js/compare/v0.4.0...v0.4.1) (2022-02-10)
+
+
+### Features
+
+* add Accept-Version to NStoreClient ([b248d29](https://github.com/BlackGlory/nstore-js/commit/b248d29f3040254edc0f54e492650920f9bda41d))
+
 ## [0.4.0](https://github.com/BlackGlory/nstore-js/compare/v0.3.1...v0.4.0) (2022-01-17)
 
 
