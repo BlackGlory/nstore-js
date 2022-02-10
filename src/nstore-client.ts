@@ -1,11 +1,12 @@
 import { fetch } from 'extra-fetch'
 import { head, put, get, del, IHTTPOptionsTransformer } from 'extra-request'
-import { url, pathname, json, text, csv, searchParams, signal, basicAuth, keepalive }
+import { url, pathname, json, text, csv, searchParams, signal, basicAuth, keepalive, header }
   from 'extra-request/transformers/index.js'
 import { NotFound } from '@blackglory/http-status'
 import { ok, toJSON, toCSV, toText } from 'extra-response'
 import { timeoutSignal, raceAbortSignals } from 'extra-abort'
 import { Falsy } from 'justypes'
+import { expectedVersion } from './utils'
 
 export { HTTPClientError } from '@blackglory/http-status'
 
@@ -79,6 +80,7 @@ export class NStoreClient {
         )
       ]))
     , keepalive(options.keepalive ?? this.options.keepalive)
+    , header('Accept-Version', expectedVersion)
     ]
   }
 
