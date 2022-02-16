@@ -9,7 +9,7 @@ export interface INStoreManagerRequestOptions {
   timeout?: number | false
 }
 
-export const expectedVersion = '0.1.7'
+export const expectedVersion = '0.2.0'
 
 export class NStoreManagerBase {
   constructor(private options: INStoreManagerOptions) {}
